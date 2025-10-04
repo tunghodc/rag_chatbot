@@ -58,3 +58,14 @@ def ingest_pdfs(pdf_dir: str) -> None:
 		else:
 			_log.error(f"Failed to extract content from {pdf_path}")
 
+
+def ingest_pdf(pdf_path: str) -> None:
+	"""Process all PDF file and extract Markdown content."""
+
+	markdown = convert_pdf_to_markdown(str(pdf_path))
+	if markdown:
+		clean_markdown = normalize_markdown_pdfs(markdown)
+		chunks = chunk_markdown(clean_markdown, max_tokens=500, overlap=100, min_tokens=200)
+		add_chunks_to_vectorstore(chunks)
+	else:
+		_log.error(f"Failed to extract content from {pdf_path}")

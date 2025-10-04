@@ -18,6 +18,7 @@ def get_env_str(name: str, default: Optional[str] = None, required: bool = False
 OPENAI_API_KEY = get_env_str("OPENAI_API_KEY", required=True)
 OPENAI_API_BASE = get_env_str("OPENAI_API_BASE", "https://mkp-api.fptcloud.com")
 EMBEDDING_MODEL = get_env_str("EMBEDDING_MODEL", "Vietnamese_Embedding")
+LLM_MODEL = get_env_str("LLM_MODEL", "gpt-oss-20b")
 
 # Vector store (Chroma)
 CHROMA_DIR = get_env_str("CHROMA_DIR", "./chroma_db")
