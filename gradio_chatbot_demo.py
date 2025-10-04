@@ -100,7 +100,7 @@ def get_rag_info() -> str:
 """
     return info
 
-def search_knowledge_base(query: str, k: int = 3) -> List[str]:
+def search_knowledge_base(query: str, k: int = 3) -> str:
         """Search for similar documents"""
 
         print("Searching for similar documents...")
@@ -109,13 +109,19 @@ def search_knowledge_base(query: str, k: int = 3) -> List[str]:
             
             formatted_results = []
             for doc, score in results:
+                print(f"Doc score: {score}, content: {doc.page_content[:100]}...")
                 source = doc.metadata.get("doc_title", "Unknown")
                 content = doc.page_content
                 formatted_results.append(
-                    f"**Source:** {source} | **Similarity:** {1-score:.2%}\n{content}"
+                    f"**Source:** {source} \n **Similarity:** {1-score:.2%}\n\n{content}\n"
                 )
             
-            return formatted_results
+            formatted_str = "🔍 **Search Results:**\n\n"
+            for i, doc in enumerate(formatted_results, 1):
+                formatted_str += f"**Result {i}:**\n"
+                formatted_str += f"\n{doc}\n\n\n"
+
+            return formatted_str
             
         except Exception as e:
             return [f"Search error: {str(e)}"]
@@ -129,7 +135,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Enhanced LangChain Chatbot") as de
         with gr.TabItem("💬 Chat"):
             with gr.Column():
                 chatbot = gr.Chatbot(
-                    height=700,
+                    height=600,
                     bubble_full_width=False,
                     show_label=True
                 )
@@ -144,28 +150,28 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Enhanced LangChain Chatbot") as de
                     submit = gr.Button("Send", variant="primary")
                    
         
-        # Tab 2: Knowledge Base Search
-        # with gr.TabItem("🔍 Knowledge Search"):
-        #     gr.Markdown("### Direct Similarity Search in Knowledge Base")
+        #Tab 2: Knowledge Base Search
+        with gr.TabItem("🔍 Knowledge Search"):
+            gr.Markdown("### Direct Similarity Search in Knowledge Base")
             
-        #     with gr.Row():
-        #         search_query = gr.Textbox(
-        #             label="Search Query",
-        #             placeholder="Enter keywords or questions to search...",
-        #             lines=3,
-        #             scale=3
-        #         )
-        #         num_results = gr.Slider(
-        #             minimum=1,
-        #             maximum=10,
-        #             value=3,
-        #             step=1,
-        #             label="Number of Results",
-        #             scale=1
-        #         )
+            with gr.Row():
+                search_query = gr.Textbox(
+                    label="Search Query",
+                    placeholder="Enter keywords or questions to search...",
+                    lines=3,
+                    scale=3
+                )
+                num_results = gr.Slider(
+                    minimum=1,
+                    maximum=10,
+                    value=3,
+                    step=1,
+                    label="Number of Results",
+                    scale=1
+                )
             
-        #     search_btn = gr.Button("Search", variant="primary")
-        #     search_results = gr.Markdown()
+            search_btn = gr.Button("Search", variant="primary")
+            search_results = gr.Markdown()
 
         # Tab 3: Document Upload
         with gr.TabItem("📄 Document Upload"):
@@ -231,6 +237,6 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0",
         server_port=7861,
-        share=False,
-        show_error=True
+        share=True,
+        show_error=True,
     )
