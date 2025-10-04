@@ -3,7 +3,7 @@ from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 
 class MemoryManager:
-    """Manages conversation memory using modern LangChain patterns"""
+    """Manages conversation memory."""
     
     def __init__(self):
         # Initialize chat history
@@ -17,6 +17,8 @@ class MemoryManager:
         - add_message("human", "content") - to add a human message
         - add_message("assistant", "content") - to add an AI message
         """
+
+        print(f"Adding message to memory: role_or_message={role_or_message}, content={content}")
         if content is not None:
             # Called with role and content
             # Extract text if content is an object

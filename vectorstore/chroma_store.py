@@ -3,11 +3,11 @@ import logging
 import chromadb
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
-from config import CHROMA_DIR, CHROMA_COLLECTION, OPENAI_API_KEY, OPENAI_API_BASE, EMBEDDING_MODEL
+from config import DB_DIR, DB_COLLECTION, OPENAI_API_KEY, OPENAI_API_BASE, EMBEDDING_MODEL
 from .embeddings import get_embeddings
 
-_client = chromadb.PersistentClient(path=CHROMA_DIR)
-_collection = _client.get_or_create_collection(name=CHROMA_COLLECTION)
+_client = chromadb.PersistentClient(path=DB_DIR)
+_collection = _client.get_or_create_collection(name=DB_COLLECTION)
 _log = logging.getLogger(__name__)
 
 embedding_client = OpenAIEmbeddings(
@@ -33,9 +33,9 @@ def add_chunks_to_vectorstore(chunks: List[Dict[str, Any]]) -> None:
 		return
 
 	_collection.add(documents=texts, embeddings=embs, metadatas=metadatas, ids=ids)
-	print(f"Saved {len(chunks)} chunks to ChromaDB collection '{CHROMA_COLLECTION}'.")
+	print(f"Saved {len(chunks)} chunks to ChromaDB collection '{DB_COLLECTION}'.")
 
-def get_langchain_chroma_retriever(persist_directory=CHROMA_DIR, collection_name=CHROMA_COLLECTION):
+def get_langchain_chroma_retriever(persist_directory=DB_DIR, collection_name=DB_COLLECTION):
 	"""
 	Returns a LangChain Chroma retriever for the specified collection.
 	"""
@@ -54,7 +54,7 @@ def get_langchain_chroma_retriever(persist_directory=CHROMA_DIR, collection_name
                     "k": 4
                 })
 
-def get_langchain_chroma_vectorstore(persist_directory=CHROMA_DIR, collection_name=CHROMA_COLLECTION):
+def get_langchain_chroma_vectorstore(persist_directory=DB_DIR, collection_name=DB_COLLECTION):
 	"""
 	Returns a LangChain Chroma vectorstore for the specified collection.
 	"""

@@ -6,7 +6,8 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from text.text_normalization import normalize_markdown_pdfs
-from vectorstore.chroma_store import add_chunks_to_vectorstore
+# from vectorstore.chroma_store import add_chunks_to_vectorstore
+from vectorstore.qdrant_store import add_chunks_to_vectorstore
 
 _log = logging.getLogger(__name__)
 

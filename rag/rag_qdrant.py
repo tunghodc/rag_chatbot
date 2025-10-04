@@ -1,12 +1,9 @@
 from typing import Generator
 from langchain_openai import ChatOpenAI
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import ChatPromptTemplate
 from langchain.callbacks.base import BaseCallbackHandler
-from config import DB_DIR, DB_COLLECTION, OPENAI_API_KEY, OPENAI_API_BASE, LLM_MODEL
-from vectorstore.chroma_store import get_langchain_chroma_retriever, get_langchain_chroma_vectorstore
-
+from config import DB_DIR, DB_COLLECTION, OPENAI_API_KEY, OPENAI_API_BASE, LLM_MODEL, SEARCH_TYPE
+from vectorstore.qdrant_store import get_qdrant_vectorstore
 class StreamingCallbackHandler(BaseCallbackHandler):
     """Custom callback handler for streaming responses"""
     
@@ -50,55 +47,33 @@ class RAGPipeline:
         self.prompt = ChatPromptTemplate.from_template(prompt_template)
 
         # Initialize or load vector store
-        self._initialize_retriever()
+        self._initialize_vector_store()
         
     
-    def _initialize_retriever(self):
+    def _initialize_vector_store(self):
         """Load the vector store"""
-        self.vector_store = get_langchain_chroma_vectorstore(persist_directory=DB_DIR, collection_name=DB_COLLECTION)
-        self.retriever = get_langchain_chroma_retriever(persist_directory=DB_DIR, collection_name=DB_COLLECTION)
-
-        # Create retriever
-        if not self.retriever:
-            raise ValueError("Failed to initialize retriever from ChromaDB.")
-
+        self.vector_store = get_qdrant_vectorstore(collection_name=DB_COLLECTION, search_type=SEARCH_TYPE)
 
     @staticmethod
     def _format_docs(docs):
         return "\n\n".join(doc.page_content for doc in docs)
 
     
-    def query(self, question: str) -> str:
-        """Query the RAG pipeline"""
-        
-        self.rag_chain = (
-                {'context': self.retriever | self._format_docs, 'question': RunnablePassthrough()}
-                | self.prompt
-                | self.llm
-                | StrOutputParser()
-            )
-        try:
-            result = self.rag_chain.invoke(question)
-            if result:
-                return result
-            else:
-                return "No answer found in the knowledge base."
-            
-        except Exception as e:
-            return f"Error querying knowledge base: {str(e)}"
-    
     def query_streaming(self, question: str) -> Generator[str, None, None]:
         """Query with streaming response"""
     
         try:
             # Get relevant documents first
-            relevant_docs = self.retriever.invoke(question) if self.retriever else []
+            relevant_docs = self.vector_store.similarity_search(question) if self.vector_store else []
+            print('Relevant docs:', relevant_docs)
             
             # Format context
             context = self._format_docs(relevant_docs)
+            print('Context:', context)
             
             # Create prompt
             prompt = self.prompt.format_messages(context=context, question=question)
+            print('Prompt:', prompt)
             
             # Stream tokens
             for chunk in self.llm.stream(prompt):

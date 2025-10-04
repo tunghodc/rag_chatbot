@@ -1,12 +1,9 @@
 import gradio as gr
 from pathlib import Path
-from rag.rag import RAGPipeline
+from rag.rag_qdrant import RAGPipeline
 
 from ingest.ingest_pdfs import ingest_pdf
 from ingest.ingest_urls import ingest_urls
-
-# Initialize settings
-
 
 # Initialize components
 rag_pipeline = RAGPipeline()
@@ -92,7 +89,7 @@ def search_knowledge_base(query: str, k: int = 3) -> str:
                 source = doc.metadata.get("doc_title", "Unknown")
                 content = doc.page_content
                 formatted_results.append(
-                    f"**Source:** {source}  |  **Similarity:** {1-score:.2%}\n\n{content}\n"
+                    f"**Source:** {source}  |  **Similarity:** {score}\n\n{content}\n"
                 )
             
             formatted_str = "🔍 **Search Results:**\n\n"
@@ -111,7 +108,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Chatbot hỗ trợ nông nghiệp"
     
     with gr.Tabs():
         # Tab 1: Chat Interface
-        with gr.TabItem("💬 Chat"):
+        with gr.TabItem("💬 Chatbot"):
             with gr.Column():
                 chatbot = gr.Chatbot(
                     height=600,
@@ -121,12 +118,12 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Chatbot hỗ trợ nông nghiệp"
                 
                 msg = gr.Textbox(
                     label="Your Message",
-                    placeholder="Ask me anything or upload documents for Q&A...",
+                    placeholder="Đặt câu hỏi về nông nghiệp của bạn ở đây.",
                     lines=2
                 )
                 
                 with gr.Row():
-                    submit = gr.Button("Send", variant="primary")           
+                    submit = gr.Button("Gửi", variant="primary")           
         
         #Tab 2: Knowledge Base Search
         with gr.TabItem("🔍 Knowledge Search"):
@@ -209,6 +206,6 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=False,
+        share=True,
         show_error=True,
     )

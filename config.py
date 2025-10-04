@@ -20,9 +20,10 @@ OPENAI_API_BASE = get_env_str("OPENAI_API_BASE", "https://mkp-api.fptcloud.com")
 EMBEDDING_MODEL = get_env_str("EMBEDDING_MODEL", "Vietnamese_Embedding")
 LLM_MODEL = get_env_str("LLM_MODEL", "gpt-oss-20b")
 
-# Vector store (Chroma)
-CHROMA_DIR = get_env_str("CHROMA_DIR", "./chroma_db")
-CHROMA_COLLECTION = get_env_str("CHROMA_COLLECTION", "rice_study")
+# Vector store (Qdrant)
+DB_DIR = get_env_str("DB_DIR", "./qdrant_db")
+DB_COLLECTION = get_env_str("DB_COLLECTION", "rice_study")
+SEARCH_TYPE = get_env_str("SEARCH_TYPE", "hybrid")  # "dense" or "hybrid"
 
 # Ingestion paths
 DOCS_URL_FILE = get_env_str("DOCS_URL_FILE", "./documents_url.txt")

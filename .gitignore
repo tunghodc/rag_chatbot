@@ -2,6 +2,8 @@
 /documents_url.txt
 .env
 /chroma_db
+/qdrant_db
+/milvus_db
 # Python bytecode
 __pycache__/
 **/__pycache__/
