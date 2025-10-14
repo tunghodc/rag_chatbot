@@ -205,7 +205,7 @@ if __name__ == "__main__":
     print("\nStarting Gradio Chatbot Demo...")
     demo.launch(
         server_name="0.0.0.0",
-        server_port=7860,
-        share=True,
+        server_port=7862,
+        share=False,
         show_error=True,
     )

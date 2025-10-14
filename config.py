@@ -17,13 +17,13 @@ def get_env_str(name: str, default: Optional[str] = None, required: bool = False
 # OpenAI / Embeddings
 OPENAI_API_KEY = get_env_str("OPENAI_API_KEY", required=True)
 OPENAI_API_BASE = get_env_str("OPENAI_API_BASE", "https://mkp-api.fptcloud.com")
-EMBEDDING_MODEL = get_env_str("EMBEDDING_MODEL", "Vietnamese_Embedding")
+EMBEDDING_MODEL = get_env_str("EMBEDDING_MODEL", "AITeamVN/Vietnamese_Embedding")
 LLM_MODEL = get_env_str("LLM_MODEL", "gpt-oss-20b")
 
 # Vector store (Qdrant)
 DB_DIR = get_env_str("DB_DIR", "./qdrant_db")
 DB_COLLECTION = get_env_str("DB_COLLECTION", "rice_study")
-SEARCH_TYPE = get_env_str("SEARCH_TYPE", "hybrid")  # "dense" or "hybrid"
+SEARCH_TYPE = get_env_str("SEARCH_TYPE", "dense")  # "dense" or "hybrid"
 
 # Ingestion paths
 DOCS_URL_FILE = get_env_str("DOCS_URL_FILE", "./documents_url.txt")
