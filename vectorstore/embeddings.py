@@ -1,13 +1,9 @@
 from typing import List, Dict, Any, Optional
-from langchain_openai import OpenAIEmbeddings
-from config import OPENAI_API_KEY, OPENAI_API_BASE, EMBEDDING_MODEL
+from langchain_huggingface import HuggingFaceEmbeddings
+from config import EMBEDDING_MODEL
 
 # Initialize embedding client (idempotent)
-embedding_client = OpenAIEmbeddings(
-	model=EMBEDDING_MODEL,
-	openai_api_key=OPENAI_API_KEY,
-	openai_api_base=OPENAI_API_BASE,
-)
+embedding_client = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
 def get_embedding(text: str) -> Optional[List[float]]:
 	"""

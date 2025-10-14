@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Optional, Union
 import logging
 from langchain_qdrant import Qdrant
-from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_qdrant import FastEmbedSparse, QdrantVectorStore, RetrievalMode
 from qdrant_client import QdrantClient, models
 from qdrant_client.http.models import Distance, SparseVectorParams, VectorParams
@@ -10,18 +10,12 @@ from uuid import uuid4
 from config import (
     DB_DIR,
     DB_COLLECTION,
-    OPENAI_API_KEY,
-    OPENAI_API_BASE,
     EMBEDDING_MODEL,
 )
 
 _log = logging.getLogger(__name__)
 
-embedding_client = OpenAIEmbeddings(
-    model=EMBEDDING_MODEL,
-    openai_api_key=OPENAI_API_KEY,
-    openai_api_base=OPENAI_API_BASE,
-)
+embedding_client = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
 
 # Create a Qdrant client for local storage
