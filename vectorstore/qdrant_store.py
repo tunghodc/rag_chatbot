@@ -1,7 +1,8 @@
 from typing import List, Dict, Any, Optional, Union
 import logging
-from langchain_qdrant import Qdrant
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_qdrant import Qdrant
+from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import FastEmbedSparse, QdrantVectorStore, RetrievalMode
 from qdrant_client import QdrantClient, models
 from qdrant_client.http.models import Distance, SparseVectorParams, VectorParams
@@ -10,6 +11,8 @@ from uuid import uuid4
 from config import (
     DB_DIR,
     DB_COLLECTION,
+    OPENAI_API_KEY,
+    OPENAI_API_BASE,
     EMBEDDING_MODEL,
 )
 
@@ -84,7 +87,7 @@ def get_qdrant_vectorstore(
                 collection_name=collection_name,
                 sparse_embedding=sparse_embeddings,
                 retrieval_mode=RetrievalMode.SPARSE,
-                vector_name="dense"
+                sparse_vector_name="sparse"
             )
         elif search_type == "dense":
         	return QdrantVectorStore(
@@ -111,3 +114,25 @@ def get_qdrant_vectorstore(
     except Exception as e:
         _log.error("Error while initializing Qdrant vectorstore: %s", e)
         return None
+
+def get_qdrant_retriever(collection_name=DB_COLLECTION, search_type: str = "dense",):
+	"""
+	Returns a LangChain Qdrant retriever for the specified collection.
+	"""
+	try:
+		vectorstore = get_qdrant_vectorstore(
+			collection_name=collection_name,
+			search_type=search_type,
+		)
+	except Exception as e:
+		_log.error(f"Error while loading Qdrant vectorstore: {e}")
+		return None
+
+	if vectorstore is None:
+		_log.error(f"Failed to initialize Qdrant vectorstore.")
+		return None
+
+	return vectorstore.as_retriever(search_type="similarity",
+                search_kwargs={
+                    "k": 6
+                })

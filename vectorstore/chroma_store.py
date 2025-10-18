@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 import logging
 import chromadb
 from langchain_community.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
 from config import DB_DIR, DB_COLLECTION, OPENAI_API_KEY, OPENAI_API_BASE, EMBEDDING_MODEL
 from .embeddings import get_embeddings
@@ -10,11 +11,7 @@ _client = chromadb.PersistentClient(path=DB_DIR)
 _collection = _client.get_or_create_collection(name=DB_COLLECTION)
 _log = logging.getLogger(__name__)
 
-embedding_client = OpenAIEmbeddings(
-	model=EMBEDDING_MODEL,
-	openai_api_key=OPENAI_API_KEY,
-	openai_api_base=OPENAI_API_BASE,
-)
+embedding_client = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
 def add_chunks_to_vectorstore(chunks: List[Dict[str, Any]]) -> None:
 	if not chunks:

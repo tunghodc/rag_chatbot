@@ -126,6 +126,7 @@ def ingest_urls(urls_file: str) -> None:
 		return
 	with requests.Session() as session:
 		for url in urls:
+			print(f"Processing URL: {url}")
 			temp_file_path = fetch_and_extract_html(url, session)
 			if not temp_file_path:
 				logging.error(f"Failed to extract content from {url}")

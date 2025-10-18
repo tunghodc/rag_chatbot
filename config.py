@@ -24,6 +24,7 @@ LLM_MODEL = get_env_str("LLM_MODEL", "gpt-oss-20b")
 DB_DIR = get_env_str("DB_DIR", "./qdrant_db")
 DB_COLLECTION = get_env_str("DB_COLLECTION", "rice_study")
 SEARCH_TYPE = get_env_str("SEARCH_TYPE", "dense")  # "dense" or "hybrid"
+POST_RANKING = get_env_str("POST_RANKING", "rrf")
 
 # Ingestion paths
 DOCS_URL_FILE = get_env_str("DOCS_URL_FILE", "./documents_url.txt")
